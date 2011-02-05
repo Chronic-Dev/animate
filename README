@@ -1,0 +1,11 @@
+animate - Customizeable Boot Animations
+ * Copyright (C) 2011 Chronic-Dev Team
+ * Copyright (C) 2011 Nicolas Haunold
+ * Copyright (C) 2011 Justin Williams
+ * Copyright (C) 2011 Alex Mault
+
+Requirements:
+Jailbroken + Untethered iDevice on 4.2.1
+
+Build Requirements:
+Theos
