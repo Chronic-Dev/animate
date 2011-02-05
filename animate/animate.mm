@@ -158,9 +158,9 @@ int main(int argc, char **argv, char **envp) {
 	} else { //Preload other iamges
 		NSArray *dirContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithFormat:@"/Library/BootLogos/%@/", value] error:nil];
 		NSArray *onlyPNGs = [dirContents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self ENDSWITH '.png'"]];
-		int j = 0;
+		unsigned int j = 0;
 		for (j = 0; j < [onlyPNGs count]; j++) {
-			CGDataProviderRef dpr = CGDataProviderCreateWithFilename([NSString stringWithFormat:@"/Library/BootLogos/%@/%@", value, [onlyPNGs objectAtIndex:j]]);
+			CGDataProviderRef dpr = CGDataProviderCreateWithFilename([[NSString stringWithFormat:@"/Library/BootLogos/%@/%@", value, [onlyPNGs objectAtIndex:j]] UTF8String]);
 			CGImageRef img = CGImageCreateWithPNGDataProvider(dpr, NULL, true, kCGRenderingIntentDefault);
 			[arr addObject:(id)img];
 			CGDataProviderRelease(dpr);
@@ -178,7 +178,7 @@ int main(int argc, char **argv, char **envp) {
 		return -1;
 
 	if (argc == 1) {
-		int i;
+		unsigned int i;
 		for (i = 0; i < [arr count]; i++) {
 			CGImageRef bootimg = (CGImageRef)[arr objectAtIndex:i];
 			CGContextDrawImage(c, CGRectMake(0, 0, screenWidth, screenHeight), bootimg);
@@ -195,7 +195,7 @@ int main(int argc, char **argv, char **envp) {
 		}	
 	} else {
 		//Loop last frame
-		int i = [arr count] - 1;
+		unsigned int i = [arr count] - 1;
 		while (getProcessId("SpringBoard") < 0) {
 			CGImageRef bootimg = (CGImageRef)[arr objectAtIndex:i];
 			CGContextDrawImage(c, CGRectMake(0, 0, screenWidth, screenHeight), bootimg);

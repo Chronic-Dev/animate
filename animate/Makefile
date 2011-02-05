@@ -1,4 +1,5 @@
 SDKVERSION=4.2
+GO_EASY_ON_ME=1
 include theos/makefiles/common.mk
 
 TOOL_NAME = animate
