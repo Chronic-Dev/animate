@@ -148,6 +148,10 @@ int main(int argc, char **argv, char **envp) {
 		NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
 		value =  [plistDictionary objectForKey:@"logo"];
 	}
+
+	if ([value isEqualToString:@"apple"]) {
+		return 0; //Exit and display nothing
+	}
 	
 	if (value == nil || [value isEqualToString:@"default"] || ![[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/Library/BootLogos/%@/0.png", value]]) {
 		anim_sequence *sp = seq;
