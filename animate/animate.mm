@@ -143,10 +143,13 @@ int main(int argc, char **argv, char **envp) {
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSMutableArray *arr = [[NSMutableArray alloc] init];
 
-	NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
-	NSString *value =  [plistDictionary objectForKey:@"logo"];
+	NSString *value = nil;
+	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/bootlogo.plist"]) {
+		NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
+		value =  [plistDictionary objectForKey:@"logo"];
+	}
 	
-	if ([value isEqualToString:@"default"] || value == nil || ![[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/Library/BootLogos/%@/0.png", value]]) {
+	if (value == nil || [value isEqualToString:@"default"] || ![[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/Library/BootLogos/%@/0.png", value]]) {
 		anim_sequence *sp = seq;
 		while (sp->data != NULL) {
 			CGDataProviderRef dpr = CGDataProviderCreateWithData(NULL, sp->data, sp->size, NULL);
