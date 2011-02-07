@@ -9,3 +9,12 @@ Jailbroken + Untethered iDevice on 4.2.1
 
 Build Requirements:
 Theos
+Dumped and correct headers from Preference.framework
+
+TODO:
+ASAP:
+combined both projects into one so they can be packaged as one. -Alex.
+clean up settings code -Alex.
+
+Future:
+Perhaps run animations on a separate thread?
