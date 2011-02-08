@@ -1,0 +1,10 @@
+Package: org.chronic-dev.animatesettings
+Name: Animation Settings 
+Depends: animate
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: Settings for Boot Logo Animations for 4.2.1 untether
+Maintainer: Jaywalker/AlJaMa
+Author: Jaywalker/AlJaMa
+Section: System
+Tag: role::hacker

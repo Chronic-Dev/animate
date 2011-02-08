@@ -1,9 +1,29 @@
+//
+//  
+//  tableview
+//
+//  Created by Alex Mault (AlJaMa)  on 2/6/11.
+//  Copyright 2011 Chronic-Dev. All rights reserved.
+//
+
+/* So why go with a PSViewController instead of a PSListController? It's because of the nature of this
+ * pref bundle. We need to dynamicly decide what content is displayed based off of a directory listing.
+ *
+ */
+
 #import <Preferences/PSViewController.h>
-//#import "PrefsView.h"
+
 @interface BootLogoListController: PSViewController <UITableViewDelegate, UITableViewDataSource> {
+    //an array of folders for possible boot logos.
     NSMutableArray *bootLogos;
+    
+    //the settings Dictionary
     NSMutableDictionary *plistDictionary;
+    
+    //The identifier of the currently selected logo.
     NSString *currentlySelected;
+    
+     //do I really need to explain this one?
     UITableView *_logoTable;
 }
 
@@ -28,22 +48,26 @@
 
 @implementation BootLogoListController
 
-
+//Our title... 
 - (NSString*) title {
     return @"Boot Animation";
 }
 
+//just to be safe. Return the tableview if someone asks.
 - (UIView*) view {
     return _logoTable;
 }
+
+
 + (void) load {
+    //every good party needs a pool!
     NSAutoreleasePool *pool([[NSAutoreleasePool alloc] init]);
-    
-    NSLog(@"load has been called");
     [pool release];
 }
+
+//The bulk of the initiation done here. 
 - (id) initForContentSize:(CGSize)size {
-     NSLog(@"init content size called");
+
     if ((self = [super init]) != nil) {
         bootLogos = [[NSMutableArray alloc] init];
         plistDictionary = [[NSMutableDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
@@ -51,44 +75,56 @@
         if(currentlySelected == nil)
             currentlySelected = @"default";
         
-        id file = nil;
-        NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager]
-                                             enumeratorAtPath:@"/Library/BootLogos/"];
-        
-        while ((file = [enumerator nextObject]))
-        {
-            BOOL isDirectory=NO;
-            [[NSFileManager defaultManager]
-             fileExistsAtPath:[NSString
-                               stringWithFormat:@"%@/%@",@"/Library/BootLogos",file]
-             isDirectory:&isDirectory];
-            if (isDirectory && ![file isEqualToString:@"default"]){
-                [bootLogos addObject:file];
-            }
-            
-        }
+        [self reloadPossibleLogos];
         
         _logoTable = [[UITableView alloc] initWithFrame: (CGRect){{0,0}, size} style:UITableViewStyleGrouped];
         [_logoTable setDataSource:self];
         [_logoTable setDelegate:self];
-       // [_logoTable setEditing:YES];
-       // [_logoTable setAllowsSelectionDuringEditing:YES];
         if ([self respondsToSelector:@selector(setView:)])
             [self setView:_logoTable];
 
     }
-     NSLog(@"init content size returning");
     return self;
 }
+
+-(void)reloadPossibleLogos{
+    id file = nil;
+    NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager]
+                                         enumeratorAtPath:@"/Library/BootLogos/"];
+    
+    while ((file = [enumerator nextObject]))
+    {
+        BOOL isDirectory=NO;
+        [[NSFileManager defaultManager]
+         fileExistsAtPath:[NSString
+                           stringWithFormat:@"%@/%@",@"/Library/BootLogos",file]
+         isDirectory:&isDirectory];
+        if (isDirectory && ![file isEqualToString:@"default"]){
+            [bootLogos addObject:file];
+        }
+        
+    }
+
+}
+
+-(void)view
+
+//something changed, not sure what.. but lets reload the data anyways.
 - (void) reloadSpecifiers{
 [_logoTable reloadData];
 }
 
+//Headers are always a nice touch. 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
     if(section == 0)
         return @"Built in";
     else
         return @"Extras";
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [self reloadPossibleLogos];
+    [_logoTable reloadData];
 }
 
 - (void)viewDidUnload
@@ -98,6 +134,10 @@
 
 
 #pragma mark - Table view data source
+
+/*
+ *All of this should be very self explanatory.. 
+ */
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {    
@@ -164,7 +204,6 @@
         currentlySelected = [bootLogos objectAtIndex:indexPath.row];
     }
     
-    // [plistDictionary writeToFile:@"/Users/Alex/bootlogos/bootlogo.plist" atomically:true encoding:NSUTF8StringEncoding error:&error];
     bool sucess= [plistDictionary writeToFile:@"/Library/BootLogos/bootlogo.plist" atomically:true];
     
     if(!sucess){

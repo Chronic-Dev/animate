@@ -4,7 +4,7 @@ Depends:
 Version: 0.0.1
 Architecture: iphoneos-arm
 Description: Boot Logo Animations for 4.2.1 untether
-Maintainer: Jaywalker
-Author: Jaywalker
+Maintainer: Jaywalker/AlJaMa
+Author: Jaywalker/AlJaMa
 Section: System
 Tag: role::hacker
