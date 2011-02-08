@@ -10,4 +10,7 @@ animate_CFLAGS = -I. -Iinclude/
 animate_LDFLAGS = -undefined dynamic_lookup
 animate_INSTALL_PATH = /usr/bin/
 
+SUBPROJECTS = settings
+
+include $(FW_MAKEDIR)/aggregate.mk
 include $(THEOS_MAKE_PATH)/tool.mk
