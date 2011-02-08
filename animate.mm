@@ -145,8 +145,10 @@ int main(int argc, char **argv, char **envp) {
 
 	NSString *value = nil;
 	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/bootlogo.plist"]) {
-		NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
-		value =  [plistDictionary objectForKey:@"logo"];
+		//NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
+        //not using a dict atm... seems to be saving problems.
+        NSError *error;
+		value = [NSString stringWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist" encoding:NSUTF8StringEncoding error:&error];
 	}
 
 	if ([value isEqualToString:@"apple"]) {

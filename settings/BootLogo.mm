@@ -1,10 +1,23 @@
-//
-//  
-//  tableview
-//
-//  Created by Alex Mault (AlJaMa)  on 2/6/11.
-//  Copyright 2011 Chronic-Dev. All rights reserved.
-//
+/**
+ * GreenPois0n Medicine - animate.mm
+ * Copyright (C) 2011 Chronic-Dev Team
+ * Copyright (C) 2011 Nicolas Haunold
+ * Copyright (C) 2011 Justin Williams
+ * Copyright (C) 2011 Alex Mault 
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ **/
 
 /* So why go with a PSViewController instead of a PSListController? It's because of the nature of this
  * pref bundle. We need to dynamicly decide what content is displayed based off of a directory listing.
@@ -70,8 +83,11 @@
 
     if ((self = [super init]) != nil) {
         bootLogos = [[NSMutableArray alloc] init];
-        plistDictionary = [[NSMutableDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
-        currentlySelected =  [plistDictionary objectForKey:@"logo"];
+            //NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
+            //not using a dict atm... seems to be saving problems.
+            NSError *error;
+            currentlySelected = [NSString stringWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist" encoding:NSUTF8StringEncoding error:&error];
+        
         if(currentlySelected == nil)
             currentlySelected = @"default";
         
@@ -83,11 +99,13 @@
         if ([self respondsToSelector:@selector(setView:)])
             [self setView:_logoTable];
 
+        
     }
     return self;
 }
 
 -(void)reloadPossibleLogos{
+    [bootLogos removeAllObjects];
     id file = nil;
     NSDirectoryEnumerator *enumerator = [[NSFileManager defaultManager]
                                          enumeratorAtPath:@"/Library/BootLogos/"];
@@ -107,7 +125,6 @@
 
 }
 
--(void)view
 
 //something changed, not sure what.. but lets reload the data anyways.
 - (void) reloadSpecifiers{
@@ -158,7 +175,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"BLG: 2");
     static NSString *CellIdentifier = @"Cell";
     
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
@@ -185,6 +201,14 @@
     return cell;
 }
 
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+        if(section == 1 || [bootLogos count] <= 0){
+            return @"Copyright (C) 2011 Chronic-Dev Team";
+        }
+
+    return nil;
+}
+
 
 
 #pragma mark - Table view delegate
@@ -204,9 +228,12 @@
         currentlySelected = [bootLogos objectAtIndex:indexPath.row];
     }
     
-    bool sucess= [plistDictionary writeToFile:@"/Library/BootLogos/bootlogo.plist" atomically:true];
+    NSError *error = nil;
+    [currentlySelected writeToFile:@"/Library/BootLogos/bootlogo.plist" atomically:true encoding:NSUTF8StringEncoding error:&error];
     
-    if(!sucess){
+    
+    
+    if(error){
         UIAlertView *errorAlert = [[[UIAlertView alloc] initWithTitle:@"Error" message:@"we were unable to save your changes. \n\n sorry.." delegate:nil cancelButtonTitle:@"darn!" otherButtonTitles:nil] autorelease];
         [errorAlert show];
     }

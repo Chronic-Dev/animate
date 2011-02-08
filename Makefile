@@ -1,6 +1,8 @@
 SDKVERSION=4.2
 GO_EASY_ON_ME=1
+THEOS_DEVICE_IP=10.1.10.16
 include theos/makefiles/common.mk
+
 
 TOOL_NAME = animate
 animate_FILES = animate.mm
