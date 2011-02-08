@@ -2,7 +2,7 @@ animate - Customizeable Boot Animations
  * Copyright (C) 2011 Chronic-Dev Team
  * Copyright (C) 2011 Nicolas Haunold
  * Copyright (C) 2011 Justin Williams
- * Copyright (C) 2011 Alex Mault
+ * Copyright (C) 2011 Alex Mault (AlJaMa)
 
 Requirements:
 Jailbroken + Untethered iDevice on 4.2.1
@@ -10,11 +10,3 @@ Jailbroken + Untethered iDevice on 4.2.1
 Build Requirements:
 Theos
 Dumped and correct headers from Preference.framework
-
-TODO:
-ASAP:
-combined both projects into one so they can be packaged as one. -Alex.
-clean up settings code -Alex.
-
-Future:
-Perhaps run animations on a separate thread?
