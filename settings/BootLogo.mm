@@ -84,11 +84,11 @@
     if ((self = [super init]) != nil) {
         bootLogos = [[NSMutableArray alloc] init];
 
-        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/bootlogo.plist"]) {
-            //NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/private/var/mobile/Library/Preferences/bootlogo.plist"]) {
+            //NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/private/var/mobile/Library/Preferences/bootlogo.plist"] retain];
             //not using a dict atm... seems to be saving problems.
             NSError *error;
-            currentlySelected = [NSString stringWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist" encoding:NSUTF8StringEncoding error:&error];
+            currentlySelected = [NSString stringWithContentsOfFile:@"/private/var/mobile/Library/Preferences/bootlogo.plist" encoding:NSUTF8StringEncoding error:&error];
         }
 
         if(currentlySelected == nil)
@@ -232,7 +232,7 @@
     }
     
     NSError *error = nil;
-    [currentlySelected writeToFile:@"/Library/BootLogos/bootlogo.plist" atomically:true encoding:NSUTF8StringEncoding error:&error];
+    [currentlySelected writeToFile:@"/private/var/mobile/Library/Preferences/bootlogo.plist" atomically:true encoding:NSUTF8StringEncoding error:&error];
     
     
     
