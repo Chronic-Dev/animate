@@ -1,0 +1,10 @@
+{
+	entry = {
+		bundle = BootLogo;
+		cell = PSLinkCell;
+		detail = "BootLogoListController";
+		icon = "BootLogo.png";
+		isController = 1;
+		label = BootLogo;
+	};
+}

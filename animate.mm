@@ -171,6 +171,7 @@ int main(int argc, char **argv, char **envp) {
 		for (j = 0; j < [onlyPNGs count]; j++) {
 			CGDataProviderRef dpr = CGDataProviderCreateWithFilename([[NSString stringWithFormat:@"/Library/BootLogos/%@/%@", value, [onlyPNGs objectAtIndex:j]] UTF8String]);
 			CGImageRef img = CGImageCreateWithPNGDataProvider(dpr, NULL, true, kCGRenderingIntentDefault);
+            
 			[arr addObject:(id)img];
 			CGDataProviderRelease(dpr);
 		}
@@ -187,6 +188,7 @@ int main(int argc, char **argv, char **envp) {
 		return -1;
 
 	if (argc == 1) {
+        CGContextSetInterpolationQuality(c, kCGInterpolationLow);
 		unsigned int i;
 		for (i = 0; i < [arr count]; i++) {
 			CGImageRef bootimg = (CGImageRef)[arr objectAtIndex:i];
