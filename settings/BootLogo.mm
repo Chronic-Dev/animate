@@ -84,11 +84,11 @@
     if ((self = [super init]) != nil) {
         bootLogos = [[NSMutableArray alloc] init];
 
-        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/private/var/mobile/Library/Preferences/org.chronic-dev.animate.plist"]) {
-            //NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/private/var/mobile/Library/Preferences/org.chronic-dev.animate.plist"] retain];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/org.chronic-dev.animate.plist"]) {
+            //NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/org.chronic-dev.animate.plist"] retain];
             //not using a dict atm... seems to be saving problems.
             NSError *error;
-            currentlySelected = [[[NSString alloc] initWithContentsOfFile:@"/private/var/mobile/Library/Preferences/org.chronic-dev.animate.plist" encoding:NSUTF8StringEncoding error:&error] retain];
+            currentlySelected = [[[NSString alloc] initWithContentsOfFile:@"/Library/BootLogos/org.chronic-dev.animate.plist" encoding:NSUTF8StringEncoding error:&error] retain];
         }
 
         if(currentlySelected == nil)
@@ -234,7 +234,7 @@
     }
     
     NSError *error = nil;
-    [currentlySelected writeToFile:@"/private/var/mobile/Library/Preferences/org.chronic-dev.animate.plist" atomically:true encoding:NSUTF8StringEncoding error:&error];
+    [currentlySelected writeToFile:@"/Library/BootLogos/org.chronic-dev.animate.plist" atomically:true encoding:NSUTF8StringEncoding error:&error];
     
     
     

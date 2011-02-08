@@ -156,11 +156,11 @@ int main(int argc, char **argv, char **envp) {
 	NSMutableArray *arr = [[NSMutableArray alloc] init];
 
 	NSString *value = nil;
-	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/private/var/mobile/Library/Preferences/org.chronic-dev.animate.plist"]) {
-		//NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/private/var/mobile/Library/Preferences/org.chronic-dev.animate.plist"] retain];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/org.chronic-dev.animate.plist"]) {
+		//NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/org.chronic-dev.animate.plist"] retain];
         //not using a dict atm... seems to be saving problems.
         NSError *error;
-		value = [NSString stringWithContentsOfFile:@"/private/var/mobile/Library/Preferences/org.chronic-dev.animate.plist" encoding:NSUTF8StringEncoding error:&error];
+		value = [NSString stringWithContentsOfFile:@"/Library/BootLogos/org.chronic-dev.animate.plist" encoding:NSUTF8StringEncoding error:&error];
 	}
 
 	if ([value isEqualToString:@"apple"] || value == nil || (![value isEqualToString:@"default"] && ![[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/Library/BootLogos/%@/0.png", value]])) {
