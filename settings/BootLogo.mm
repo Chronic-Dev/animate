@@ -84,15 +84,15 @@
     if ((self = [super init]) != nil) {
         bootLogos = [[NSMutableArray alloc] init];
 
-        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/private/var/mobile/Library/Preferences/bootlogo.plist"]) {
-            //NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/private/var/mobile/Library/Preferences/bootlogo.plist"] retain];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/bootlogo.plist"]) {
+            //NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
             //not using a dict atm... seems to be saving problems.
             NSError *error;
-            currentlySelected = [NSString stringWithContentsOfFile:@"/private/var/mobile/Library/Preferences/bootlogo.plist" encoding:NSUTF8StringEncoding error:&error];
+            currentlySelected = [[[NSString alloc] initWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist" encoding:NSUTF8StringEncoding error:&error] retain];
         }
 
         if(currentlySelected == nil)
-            currentlySelected = @"default";
+            currentlySelected = [[[NSString alloc] initWithString:@"default"] retain];
 
         [self reloadPossibleLogos];
 
@@ -120,7 +120,7 @@
          fileExistsAtPath:[NSString
                            stringWithFormat:@"%@/%@",@"/Library/BootLogos",file]
          isDirectory:&isDirectory];
-        if (isDirectory && ![file isEqualToString:@"default"]){
+        if (isDirectory && ![file isEqualToString:@"default"] && ![file isEqualToString:@"apple"]) {
             [bootLogos addObject:file];
         }
         
@@ -195,7 +195,7 @@
             if([currentlySelected isEqualToString:@"default"])
                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }
-    }else if(indexPath.section ==1){
+    }else if(indexPath.section == 1){
         cell.textLabel.text = [bootLogos objectAtIndex:indexPath.row];
         if([cell.textLabel.text isEqualToString:currentlySelected])
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -221,10 +221,12 @@
     if(indexPath.section == 0){
         if(indexPath.row == 0){
             [plistDictionary setObject:@"apple" forKey:@"logo"];
-            currentlySelected = @"apple";
+	    [currentlySelected release];
+            currentlySelected = [[[NSString alloc] initWithString:@"apple"] retain];
         }else if(indexPath.row == 1){
             [plistDictionary setObject:@"default" forKey:@"logo"];
-            currentlySelected = @"default";
+		[currentlySelected release];
+            currentlySelected = [[[NSString alloc] initWithString:@"default"] retain];
         }
     }else{
         [plistDictionary setObject:[bootLogos objectAtIndex:indexPath.row] forKey:@"logo"];
@@ -232,7 +234,7 @@
     }
     
     NSError *error = nil;
-    [currentlySelected writeToFile:@"/private/var/mobile/Library/Preferences/bootlogo.plist" atomically:true encoding:NSUTF8StringEncoding error:&error];
+    [currentlySelected writeToFile:@"/Library/BootLogos/bootlogo.plist" atomically:true encoding:NSUTF8StringEncoding error:&error];
     
     
     

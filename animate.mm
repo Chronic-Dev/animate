@@ -156,11 +156,11 @@ int main(int argc, char **argv, char **envp) {
 	NSMutableArray *arr = [[NSMutableArray alloc] init];
 
 	NSString *value = nil;
-	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/private/var/mobile/Library/Preferences/bootlogo.plist"]) {
-		//NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/private/var/mobile/Library/Preferences/bootlogo.plist"] retain];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/bootlogo.plist"]) {
+		//NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
         //not using a dict atm... seems to be saving problems.
         NSError *error;
-		value = [NSString stringWithContentsOfFile:@"/private/var/mobile/Library/Preferences/bootlogo.plist" encoding:NSUTF8StringEncoding error:&error];
+		value = [NSString stringWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist" encoding:NSUTF8StringEncoding error:&error];
 	}
 
 	if ([value isEqualToString:@"apple"] || value == nil || ![[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/Library/BootLogos/%@/0.png", value]]) {
