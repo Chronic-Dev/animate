@@ -139,23 +139,33 @@ CGContextRef fb_open() {
 	return context;
 }
 
+NSInteger firstNumSort(id str1, id str2, void *context) {
+    int num1 = [str1 integerValue];
+    int num2 = [str2 integerValue];
+
+    if (num1 < num2)
+        return NSOrderedAscending;
+    else if (num1 > num2)
+        return NSOrderedDescending;
+
+    return NSOrderedSame;
+}
+
 int main(int argc, char **argv, char **envp) {
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSMutableArray *arr = [[NSMutableArray alloc] init];
 
 	NSString *value = nil;
-	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/bootlogo.plist"]) {
-		//NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
+	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/org.chronic-dev.animate.plist"]) {
+		//NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/org.chronic-dev.animate.plist"] retain];
         //not using a dict atm... seems to be saving problems.
         NSError *error;
-		value = [NSString stringWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist" encoding:NSUTF8StringEncoding error:&error];
+		value = [NSString stringWithContentsOfFile:@"/Library/BootLogos/org.chronic-dev.animate.plist" encoding:NSUTF8StringEncoding error:&error];
 	}
 
-	if ([value isEqualToString:@"apple"]) {
+	if ([value isEqualToString:@"apple"] || value == nil || (![value isEqualToString:@"default"] && ![[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/Library/BootLogos/%@/0.png", value]])) {
 		return 0; //Exit and display nothing
-	}
-	
-	if (value == nil || [value isEqualToString:@"default"] || ![[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/Library/BootLogos/%@/0.png", value]]) {
+	} else if ([value isEqualToString:@"default"]) {
 		anim_sequence *sp = seq;
 		while (sp->data != NULL) {
 			CGDataProviderRef dpr = CGDataProviderCreateWithData(NULL, sp->data, sp->size, NULL);
@@ -167,6 +177,7 @@ int main(int argc, char **argv, char **envp) {
 	} else { //Preload other iamges
 		NSArray *dirContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[NSString stringWithFormat:@"/Library/BootLogos/%@/", value] error:nil];
 		NSArray *onlyPNGs = [dirContents filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"self ENDSWITH '.png'"]];
+		onlyPNGs = [onlyPNGs sortedArrayUsingFunction:firstNumSort context:NULL];
 		unsigned int j = 0;
 		for (j = 0; j < [onlyPNGs count]; j++) {
 			CGDataProviderRef dpr = CGDataProviderCreateWithFilename([[NSString stringWithFormat:@"/Library/BootLogos/%@/%@", value, [onlyPNGs objectAtIndex:j]] UTF8String]);

@@ -83,26 +83,26 @@
 
     if ((self = [super init]) != nil) {
         bootLogos = [[NSMutableArray alloc] init];
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/bootlogo.plist"]) {
-            //NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist"] retain];
+
+        if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/org.chronic-dev.animate.plist"]) {
+            //NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/org.chronic-dev.animate.plist"] retain];
             //not using a dict atm... seems to be saving problems.
             NSError *error;
-            currentlySelected = [NSString stringWithContentsOfFile:@"/Library/BootLogos/bootlogo.plist" encoding:NSUTF8StringEncoding error:&error];
+            currentlySelected = [[[NSString alloc] initWithContentsOfFile:@"/Library/BootLogos/org.chronic-dev.animate.plist" encoding:NSUTF8StringEncoding error:&error] retain];
         }
-        
+
         if(currentlySelected == nil)
-            currentlySelected = @"default";
-        
+            currentlySelected = [[[NSString alloc] initWithString:@"default"] retain];
+
         [self reloadPossibleLogos];
-        
+
         _logoTable = [[UITableView alloc] initWithFrame: (CGRect){{0,0}, size} style:UITableViewStyleGrouped];
         [_logoTable setDataSource:self];
         [_logoTable setDelegate:self];
         if ([self respondsToSelector:@selector(setView:)])
             [self setView:_logoTable];
 
-        
+
     }
     return self;
 }
@@ -120,7 +120,7 @@
          fileExistsAtPath:[NSString
                            stringWithFormat:@"%@/%@",@"/Library/BootLogos",file]
          isDirectory:&isDirectory];
-        if (isDirectory && ![file isEqualToString:@"default"]){
+        if (isDirectory && ![file isEqualToString:@"default"] && ![file isEqualToString:@"apple"]) {
             [bootLogos addObject:file];
         }
         
@@ -195,7 +195,7 @@
             if([currentlySelected isEqualToString:@"default"])
                 cell.accessoryType = UITableViewCellAccessoryCheckmark;
         }
-    }else if(indexPath.section ==1){
+    }else if(indexPath.section == 1){
         cell.textLabel.text = [bootLogos objectAtIndex:indexPath.row];
         if([cell.textLabel.text isEqualToString:currentlySelected])
             cell.accessoryType = UITableViewCellAccessoryCheckmark;
@@ -221,10 +221,12 @@
     if(indexPath.section == 0){
         if(indexPath.row == 0){
             [plistDictionary setObject:@"apple" forKey:@"logo"];
-            currentlySelected = @"apple";
+	    [currentlySelected release];
+            currentlySelected = [[[NSString alloc] initWithString:@"apple"] retain];
         }else if(indexPath.row == 1){
             [plistDictionary setObject:@"default" forKey:@"logo"];
-            currentlySelected = @"default";
+		[currentlySelected release];
+            currentlySelected = [[[NSString alloc] initWithString:@"default"] retain];
         }
     }else{
         [plistDictionary setObject:[bootLogos objectAtIndex:indexPath.row] forKey:@"logo"];
@@ -232,7 +234,7 @@
     }
     
     NSError *error = nil;
-    [currentlySelected writeToFile:@"/Library/BootLogos/bootlogo.plist" atomically:true encoding:NSUTF8StringEncoding error:&error];
+    [currentlySelected writeToFile:@"/Library/BootLogos/org.chronic-dev.animate.plist" atomically:true encoding:NSUTF8StringEncoding error:&error];
     
     
     
