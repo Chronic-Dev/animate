@@ -199,7 +199,7 @@ int main(int argc, char **argv, char **envp) {
 		return -1;
 
 	if (argc == 1) {
-        CGContextSetInterpolationQuality(c, kCGInterpolationLow);
+		CGContextSetInterpolationQuality(c, kCGInterpolationLow);
 		unsigned int i;
 		for (i = 0; i < [arr count]; i++) {
 			CGImageRef bootimg = (CGImageRef)[arr objectAtIndex:i];
