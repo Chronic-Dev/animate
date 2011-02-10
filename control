@@ -1,10 +1,15 @@
 Package: org.chronic-dev.animate
-Name: animate
 Depends: preferenceloader
+Name: animate
 Version: 1.0.0
+Installed-Size: 204
 Architecture: iphoneos-arm
 Description: Boot Logo Animations for 4.2.1 untether
-Maintainer: Chronic-Dev Inc. <jaywalker@chronic-dev.com>
-Author: Chronic-Dev Inc. <jaywalker@chronic-dev.com>
+Depiction: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=animateData
+Homepage: http://moreinfo.thebigboss.org/moreinfo/depiction.php?file=animateData
+Maintainer: Bigboss <bigboss@thebigboss.org>
+Author: Chronic-Dev Inc. <jaywalker@chronic-dev.com>>
 Section: System
+Sponsor: thebigboss.org <http://thebigboss.org>
+dev: chronic-dev
 Tag: role::user
