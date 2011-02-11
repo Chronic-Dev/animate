@@ -6,9 +6,9 @@ include theos/makefiles/common.mk
 
 
 BUNDLE_NAME = BootLogo
-BootLogo_FILES = BootLogo.mm 
+BootLogo_FILES = BootLogo.mm animationPreviewViewController.m
 BootLogo_INSTALL_PATH = /Library/PreferenceBundles
-BootLogo_FRAMEWORKS = UIKit Foundation
+BootLogo_FRAMEWORKS = UIKit Foundation CoreGraphics
 BootLogo_PRIVATE_FRAMEWORKS = Preferences
 
 include $(THEOS_MAKE_PATH)/bundle.mk
