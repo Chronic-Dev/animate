@@ -75,6 +75,10 @@ NSInteger firstNumSort(id str1, id str2, void *context) {
                 
                 [imagesArr addObject:(id)img];
                 CGDataProviderRelease(dpr);
+                
+                UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:@"restart" style:UIBarButtonItemStylePlain target:self action:@selector(beginAnimation)];
+                
+                self.navigationItem.rightBarButtonItem = button;
             }
         //}
 
@@ -129,6 +133,11 @@ NSInteger firstNumSort(id str1, id str2, void *context) {
 }
 
 -(void)beginAnimation{
+    if(animationTimer){
+        [animationTimer invalidate];
+        animationTimer = nil;
+        currentFrame = 0;
+    }
     animationTimer = [[NSTimer alloc] initWithFireDate:[NSDate date] interval:(1/framerate) target:self selector:@selector(stepAnimation:) userInfo:nil repeats:true];
     [[NSRunLoop currentRunLoop] addTimer:animationTimer forMode:NSDefaultRunLoopMode];
 
@@ -146,12 +155,8 @@ NSInteger firstNumSort(id str1, id str2, void *context) {
     if(currentFrame < [imagesArr count]-1){
         currentFrame++;
     }else{
-        if(animationTimer){
-            [animationTimer invalidate];
-            animationTimer = nil;
-            currentFrame = 0;
-            [self beginAnimation];
-        }
+        //we are done with the animation... we really don't need to do anything.
+        //but I figured i'd break out a case anyways.
     }
 }
 

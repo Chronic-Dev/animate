@@ -39,6 +39,8 @@
     
      //do I really need to explain this one?
     UITableView *_logoTable;
+    UIBarButtonItem *previewButton;
+    
 }
 
 + (void) load;
@@ -84,6 +86,7 @@
 
     if ((self = [super init]) != nil) {
         bootLogos = [[NSMutableArray alloc] init];
+        previewButton = [[UIBarButtonItem alloc] initWithTitle:@"Preview" style:UIBarButtonItemStylePlain target:self action:@selector(playPreview)];
 
         if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/org.chronic-dev.animate.plist"]) {
             //NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/org.chronic-dev.animate.plist"] retain];
@@ -102,9 +105,9 @@
         [_logoTable setDelegate:self];
         if ([self respondsToSelector:@selector(setView:)])
             [self setView:_logoTable];
-        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:@"Preview" style:UIBarButtonItemStylePlain target:self action:@selector(playPreview)];
         
-        self.navigationItem.rightBarButtonItem = button;
+
+
         
 
     }
@@ -154,6 +157,12 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [self reloadPossibleLogos];
+    if([currentlySelected isEqualToString:@"default"] || [currentlySelected isEqualToString:@"apple"]){
+        
+        self.navigationItem.rightBarButtonItem = nil;
+    }else{
+        self.navigationItem.rightBarButtonItem = previewButton;
+    }
     [_logoTable reloadData];
 }
 
@@ -230,17 +239,16 @@
 {
     if(indexPath.section == 0){
         if(indexPath.row == 0){
-            [plistDictionary setObject:@"apple" forKey:@"logo"];
 	    [currentlySelected release];
             currentlySelected = [[[NSString alloc] initWithString:@"apple"] retain];
         }else if(indexPath.row == 1){
-            [plistDictionary setObject:@"default" forKey:@"logo"];
 		[currentlySelected release];
             currentlySelected = [[[NSString alloc] initWithString:@"default"] retain];
         }
+        self.navigationItem.rightBarButtonItem = nil;
     }else{
-        [plistDictionary setObject:[bootLogos objectAtIndex:indexPath.row] forKey:@"logo"];
         currentlySelected = [bootLogos objectAtIndex:indexPath.row];
+        self.navigationItem.rightBarButtonItem = previewButton;
     }
     
     NSError *error = nil;
