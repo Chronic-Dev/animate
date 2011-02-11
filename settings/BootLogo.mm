@@ -25,6 +25,7 @@
  */
 
 #import <Preferences/PSViewController.h>
+#import "animationPreviewViewController.h"
 
 @interface BootLogoListController: PSViewController <UITableViewDelegate, UITableViewDataSource> {
     //an array of folders for possible boot logos.
@@ -101,10 +102,19 @@
         [_logoTable setDelegate:self];
         if ([self respondsToSelector:@selector(setView:)])
             [self setView:_logoTable];
-
+        UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithTitle:@"Preview" style:UIBarButtonItemStylePlain target:self action:@selector(playPreview)];
+        
+        self.navigationItem.rightBarButtonItem = button;
+        
 
     }
     return self;
+}
+
+-(void)playPreview{
+    animationPreviewViewController *preview = [[animationPreviewViewController alloc] initWithAnimationName:currentlySelected];
+    [super pushController:preview];
+    [preview release];
 }
 
 -(void)reloadPossibleLogos{

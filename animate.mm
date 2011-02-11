@@ -3,6 +3,7 @@
   * Copyright (C) 2011 Chronic-Dev Team
   * Copyright (C) 2011 Nicolas Haunold
   * Copyright (C) 2011 Justin Williams
+  * Copyright (C) 2011 Alex Mault
   *
   * This program is free software: you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
