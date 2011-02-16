@@ -129,7 +129,7 @@ CGContextRef fb_open() {
 
 	// create bitmap context
 	colorSpace = CGColorSpaceCreateDeviceRGB();
-	context = CGBitmapContextCreate(frameBuffer, screenWidth, screenHeight, 8, bytesPerRow, colorSpace, kCGImageAlphaPremultipliedLast);
+	context = CGBitmapContextCreate(frameBuffer, screenWidth, screenHeight, 8, bytesPerRow, colorSpace, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Little);
 	if(context == NULL) {
 		printf("Couldn't create screen context!\n");
 		return NULL;
