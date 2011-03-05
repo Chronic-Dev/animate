@@ -1,6 +1,7 @@
 Package: org.chronic-dev.animate
 Depends: preferenceloader
-Name: animate
+Conflicts: imagemagick
+Name: BootLogo
 Version: 1.0.1
 Installed-Size: 204
 Architecture: iphoneos-arm
