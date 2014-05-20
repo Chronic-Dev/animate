@@ -225,7 +225,7 @@
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
         if(section == 1 || [bootLogos count] <= 0){
-            return @"Copyright (C) 2011 Chronic-Dev Team";
+            return @"Copyright (C) 2011 Chronic-Dev Team \n\n 2014 William Vabrinskas Compiled for 64 bit architecture";
         }
 
     return nil;
