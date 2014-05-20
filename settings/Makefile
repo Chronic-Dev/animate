@@ -1,9 +1,8 @@
-SDKVERSION=4.2
+ARCHS = armv7 arm64
+
 GO_EASY_ON_ME=1
-THEOS_DEVICE_IP=10.1.10.16
+
 include theos/makefiles/common.mk
-
-
 
 BUNDLE_NAME = BootLogo
 BootLogo_FILES = BootLogo.mm animationPreviewViewController.m
