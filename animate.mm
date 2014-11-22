@@ -33,8 +33,7 @@
 #include <mach/mach_traps.h>
 #include "animate_frames.h"
 
-int screenWidth, screenHeight;
-
+size_t screenWidth, screenHeight;
 pid_t getProcessId(const char *csProcessName){
 	struct kinfo_proc *sProcesses = NULL, *sNewProcesses;
 	pid_t  iCurrentPid;
@@ -79,53 +78,50 @@ pid_t getProcessId(const char *csProcessName){
 }
 
 CGContextRef fb_open() {
-	io_connect_t conn = NULL;
-	int bytesPerRow;
+io_connect_t conn = NULL;
+	size_t bytesPerRow;
 	void *surfaceBuffer;
 	void *frameBuffer;
 	CGContextRef context = NULL;
 	CGColorSpaceRef colorSpace;
 
 	void *mfb_lib = dlopen("/System/Library/PrivateFrameworks/IOMobileFramebuffer.framework/IOMobileFramebuffer", 2);
-	void *cs_lib = dlopen("/System/Library/PrivateFrameworks/CoreSurface.framework/CoreSurface", 2);
+	void *cs_lib = dlopen("/System/Library/PrivateFrameworks/IOSurface.framework/IOSurface", 2);
 
 	int (*mfb_open)(io_service_t, task_port_t, uint32_t, io_connect_t*);
 	int (*mfb_layr)(io_service_t, int, void *);
-	int (*cs_lock)(void *, unsigned int);
-	int (*cs_unlock)(void *);
-	int (*cs_height)(void *);
-	int (*cs_width)(void *);
-	int (*cs_bytes)(void *);
+	int (*cs_lock)(void *, uint32_t, void*);
+	int (*cs_unlock)(void *, uint32_t, void*);
+	size_t (*cs_height)(void *);
+	size_t (*cs_width)(void *);
+	size_t (*cs_bytes)(void *);
 	void *(*cs_addr)(void *);
 
 	*(void **)(&mfb_open) = dlsym(mfb_lib, "IOMobileFramebufferOpen");
 	*(void **)(&mfb_layr) = dlsym(mfb_lib, "IOMobileFramebufferGetLayerDefaultSurface");
-	*(void **)(&cs_lock) = dlsym(cs_lib, "CoreSurfaceBufferLock");
-	*(void **)(&cs_unlock) = dlsym(cs_lib, "CoreSurfaceBufferUnlock");
-	*(void **)(&cs_height) = dlsym(cs_lib, "CoreSurfaceBufferGetHeight");
-	*(void **)(&cs_width) = dlsym(cs_lib, "CoreSurfaceBufferGetWidth");
-	*(void **)(&cs_bytes) = dlsym(cs_lib, "CoreSurfaceBufferGetBytesPerRow");
-	*(void **)(&cs_addr) = dlsym(cs_lib, "CoreSurfaceBufferGetBaseAddress");
-
+	*(void **)(&cs_lock) = dlsym(cs_lib, "IOSurfaceLock");
+	*(void **)(&cs_unlock) = dlsym(cs_lib, "IOSurfaceUnlock");
+	*(void **)(&cs_height) = dlsym(cs_lib, "IOSurfaceGetHeight");
+	*(void **)(&cs_width) = dlsym(cs_lib, "IOSurfaceGetWidth");
+	*(void **)(&cs_bytes) = dlsym(cs_lib, "IOSurfaceGetBytesPerRow");
+	*(void **)(&cs_addr) = dlsym(cs_lib, "IOSurfaceGetBaseAddress");
 	io_service_t fb_service = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("AppleCLCD"));
-	if (!fb_service) {
+if (!fb_service) {
 		fb_service = IOServiceGetMatchingService(kIOMasterPortDefault, IOServiceMatching("AppleM2CLCD"));
 		if (!fb_service) {
-			printf("Couldn't find framebuffer.\n");
+			NSLog(@"Couldn't find framebuffer.\n");
 			return NULL;
 		}
 	}
-
 	(*mfb_open)(fb_service, mach_task_self(), 0, &conn);
 	(*mfb_layr)(conn, 0, &surfaceBuffer);
 
 	screenHeight = (*cs_height)(surfaceBuffer);
 	screenWidth = (*cs_width)(surfaceBuffer);
 	bytesPerRow = (*cs_bytes)(surfaceBuffer);
-
-	(*cs_lock)(surfaceBuffer, 3);
+	(*cs_lock)(surfaceBuffer, 3, NULL);
 	frameBuffer = (*cs_addr)(surfaceBuffer);
-	(*cs_unlock)(surfaceBuffer);
+	(*cs_unlock)(surfaceBuffer, 3, NULL);
 
 	// create bitmap context
 	colorSpace = CGColorSpaceCreateDeviceRGB();
@@ -155,7 +151,6 @@ NSInteger firstNumSort(id str1, id str2, void *context) {
 int main(int argc, char **argv, char **envp) {
 	NSAutoreleasePool *p = [[NSAutoreleasePool alloc] init];
 	NSMutableArray *arr = [[NSMutableArray alloc] init];
-
 	NSString *value = nil;
 	if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Library/BootLogos/org.chronic-dev.animate.plist"]) {
 		//NSDictionary *plistDictionary = [[NSDictionary dictionaryWithContentsOfFile:@"/Library/BootLogos/org.chronic-dev.animate.plist"] retain];
@@ -163,7 +158,6 @@ int main(int argc, char **argv, char **envp) {
         NSError *error;
 		value = [NSString stringWithContentsOfFile:@"/Library/BootLogos/org.chronic-dev.animate.plist" encoding:NSUTF8StringEncoding error:&error];
 	}
-
 	if ([value isEqualToString:@"apple"] || value == nil || (![value isEqualToString:@"default"] && ![[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"/Library/BootLogos/%@/0.png", value]])) {
 		return 0; //Exit and display nothing
 	} else if ([value isEqualToString:@"default"]) {
@@ -188,7 +182,6 @@ int main(int argc, char **argv, char **envp) {
 			CGDataProviderRelease(dpr);
 		}
 	}
-
  	CGContextRef c = NULL;
 	int j = 0;
 	while (c == NULL && j < 50) {
